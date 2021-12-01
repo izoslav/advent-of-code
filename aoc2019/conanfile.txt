@@ -1,0 +1,6 @@
+[requires]
+fmt/6.0.0
+Catch/1.12.1@bincrafters/stable
+
+[generators]
+cmake_find_package
