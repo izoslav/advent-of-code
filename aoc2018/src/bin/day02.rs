@@ -19,7 +19,7 @@ impl BoxID {
 }
 
 pub fn main() {
-    let box_ids: Vec<BoxID> = fs::read_to_string("res/day02_1.txt")
+    let box_ids: Vec<BoxID> = fs::read_to_string("res/day02.txt")
         .unwrap()
         .lines()
         .map(|l| BoxID::new(l))

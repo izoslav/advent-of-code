@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 use std::fs;
 
 pub fn main() {
-    let input = fs::read_to_string("res/day01_1.txt").unwrap();
+    let input = fs::read_to_string("res/day01.txt").unwrap();
 
     let frequencies: Vec<i32> = input
         .lines()

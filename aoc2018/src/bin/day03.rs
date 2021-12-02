@@ -46,7 +46,7 @@ impl Claim {
 }
 
 fn main() {
-    let entries: Vec<String> = fs::read_to_string("res/day03_1.txt")
+    let entries: Vec<String> = fs::read_to_string("res/day03.txt")
         .unwrap()
         .lines()
         .map(|l| l.to_string())

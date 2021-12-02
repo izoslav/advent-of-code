@@ -1,7 +1,7 @@
 use std::fs;
 
 fn main() {
-    let polymer = fs::read_to_string("res/day05_1.txt").unwrap();
+    let polymer = fs::read_to_string("res/day05.txt").unwrap();
 
     let reduced_len = reduced_len(&polymer);
     println!("Part 1 answer: {}", reduced_len);

@@ -4,7 +4,7 @@ use std::fs;
 fn main() {
     let mut steps: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
 
-    fs::read_to_string("res/day07_1.txt")
+    fs::read_to_string("res/day07.txt")
         .unwrap()
         .lines()
         .for_each(|l| {

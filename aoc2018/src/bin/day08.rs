@@ -2,7 +2,7 @@ use std::fs;
 use std::slice::Iter;
 
 fn main() {
-    let input: Vec<usize> = fs::read_to_string("res/day08_1.txt")
+    let input: Vec<usize> = fs::read_to_string("res/day08.txt")
         .unwrap()
         .split_ascii_whitespace()
         .map(|entry| entry.parse::<usize>().unwrap())

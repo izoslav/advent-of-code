@@ -58,7 +58,7 @@ impl Schedule for BTreeMap<usize, [usize; 60]> {
 }
 
 fn main() {
-    let logs: Vec<String> = fs::read_to_string("res/day04_1.txt")
+    let logs: Vec<String> = fs::read_to_string("res/day04.txt")
         .unwrap()
         .lines()
         .into_iter()

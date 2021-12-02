@@ -4,7 +4,7 @@ use std::{
 };
 
 fn main() {
-    let coords = fs::read_to_string("res/day06_1.txt")
+    let coords = fs::read_to_string("res/day06.txt")
         .unwrap()
         .lines()
         .map(|l| {
