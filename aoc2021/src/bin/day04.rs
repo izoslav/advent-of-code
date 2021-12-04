@@ -17,24 +17,20 @@ fn main() {
 
     input.remove(0);
 
-    let mut boards = input
+    let boards = input
         .chunks(5)
         .map(|lines| {
-            let mut board: Array2D<usize> = Array2D::filled_with(0, 5, 5);
+            let numbers = lines
+                .iter()
+                .map(|line| {
+                    line.split(' ')
+                        .filter(|&n| !n.is_empty())
+                        .map(|n| n.parse().unwrap())
+                        .collect::<Vec<usize>>()
+                })
+                .collect::<Vec<Vec<usize>>>();
 
-            for r in 0..5 {
-                let numbers = lines[r]
-                    .split(' ')
-                    .filter(|&n| !n.is_empty())
-                    .map(|n| n.parse().unwrap())
-                    .collect::<Vec<usize>>();
-
-                for c in 0..5 {
-                    *board.get_mut(r, c).unwrap() = numbers[c];
-                }
-            }
-
-            board
+            Array2D::from_rows(&numbers)
         })
         .collect::<Vec<Array2D<usize>>>();
 
@@ -54,7 +50,7 @@ fn main() {
 
     {
         // part 2
-        let mut boards = boards.clone();
+        let mut boards = boards;
 
         for n in &numbers {
             boards.iter_mut().for_each(|board| mark(board, *n));
@@ -64,11 +60,9 @@ fn main() {
                     .into_iter()
                     .filter(|board| !check_board(board))
                     .collect();
-            } else {
-                if let Some(score) = check_winner(&boards) {
-                    println!("Part 2 answer: {} ({} * {})", score * n, score, n);
-                    break;
-                }
+            } else if let Some(score) = check_winner(&boards) {
+                println!("Part 2 answer: {} ({} * {})", score * n, score, n);
+                break;
             }
         }
     }
@@ -100,30 +94,12 @@ fn check_board(board: &Array2D<usize>) -> bool {
         return true;
     }
 
-    // let mut bingo = true;
-    // for i in 0..5 {
-    //   if *board.get(i, i).unwrap() != 100 {
-    //     bingo = false;
-    //     break;
-    //   }
-    // }
-    // if bingo { return true; }
-
-    // let mut bingo = true;
-    // for i in 0..5 {
-    //   if *board.get(4 - i, i).unwrap() != 100 {
-    //     bingo = false;
-    //     break;
-    //   }
-    // }
-    // if bingo { return true; }
-
     false
 }
 
-fn check_winner(boards: &Vec<Array2D<usize>>) -> Option<usize> {
+fn check_winner(boards: &[Array2D<usize>]) -> Option<usize> {
     for board in boards {
-        if check_board(&board) {
+        if check_board(board) {
             let score = board
                 .elements_row_major_iter()
                 .filter(|&n| *n != 100)
