@@ -78,7 +78,6 @@ fn main() {
 
     {
         let clouds = clouds
-            .clone()
             .into_iter()
             .filter(|cloud| cloud.is_horizontal_or_vertical() || cloud.is_diagonal())
             .collect::<Vec<Line>>();
@@ -98,7 +97,7 @@ fn main() {
     }
 }
 
-fn normalize(clouds: &Vec<Line>) -> Vec<Line> {
+fn normalize(clouds: &[Line]) -> Vec<Line> {
     let (bbsx, bbsy, _, _) = bounding_box(clouds);
 
     clouds
@@ -112,7 +111,7 @@ fn normalize(clouds: &Vec<Line>) -> Vec<Line> {
         .collect::<Vec<Line>>()
 }
 
-fn bounding_box(lines: &Vec<Line>) -> (usize, usize, usize, usize) {
+fn bounding_box(lines: &[Line]) -> (usize, usize, usize, usize) {
     let min_x = lines.iter().map(|l| l.sx.min(l.dx)).min().unwrap();
 
     let min_y = lines.iter().map(|l| l.sy.min(l.dy)).min().unwrap();
