@@ -28,15 +28,15 @@ fn main() {
     let mut output_value = 0;
 
     for (patterns, input) in &input {
-        let decoded_patterns = decode_patterns(&patterns);
-        let decoded_input = decode_input(&decoded_patterns, &input);
+        let decoded_patterns = decode_patterns(patterns);
+        let decoded_input = decode_input(&decoded_patterns, input);
 
         unique_segments += decoded_input
             .iter()
             .filter(|&i| [1, 4, 7, 8].contains(i))
             .count();
 
-        let pattern_to_num = decode_segments(&patterns);
+        let pattern_to_num = decode_segments(patterns);
 
         output_value += input
             .iter()
@@ -103,42 +103,36 @@ fn decode_segments(input: &[String]) -> HashMap<String, u32> {
         _ => (),
     });
 
-    num_to_pattern[3] = &five_segments
+    num_to_pattern[3] = five_segments
         .iter()
-        .filter(|&s| intersect_len(s, num_to_pattern[1]) == 2)
-        .next()
+        .find(|&s| intersect_len(s, num_to_pattern[1]) == 2)
         .unwrap();
 
-    num_to_pattern[9] = &six_segments
+    num_to_pattern[9] = six_segments
         .iter()
-        .filter(|&s| intersect_len(s, num_to_pattern[3]) == 5)
-        .next()
+        .find(|&s| intersect_len(s, num_to_pattern[3]) == 5)
         .unwrap();
 
-    num_to_pattern[2] = &five_segments
+    num_to_pattern[2] = five_segments
         .iter()
-        .filter(|&s| intersect_len(s, num_to_pattern[9]) == 4)
-        .next()
+        .find(|&s| intersect_len(s, num_to_pattern[9]) == 4)
         .unwrap();
 
-    num_to_pattern[5] = &five_segments
+    num_to_pattern[5] = five_segments
         .iter()
-        .filter(|&s| {
+        .find(|&s| {
             intersect_len(s, num_to_pattern[9]) == 5 && intersect_len(s, num_to_pattern[1]) == 1
         })
-        .next()
         .unwrap();
 
-    num_to_pattern[6] = &six_segments
+    num_to_pattern[6] = six_segments
         .iter()
-        .filter(|&s| intersect_len(s, num_to_pattern[5]) == 5 && s != num_to_pattern[9])
-        .next()
+        .find(|&s| intersect_len(s, num_to_pattern[5]) == 5 && s != num_to_pattern[9])
         .unwrap();
 
-    num_to_pattern[0] = &six_segments
+    num_to_pattern[0] = six_segments
         .iter()
-        .filter(|&s| s != num_to_pattern[6] && s != num_to_pattern[9])
-        .next()
+        .find(|&s| s != num_to_pattern[6] && s != num_to_pattern[9])
         .unwrap();
 
     num_to_pattern
