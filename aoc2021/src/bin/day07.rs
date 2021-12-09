@@ -18,7 +18,7 @@ fn main() {
 }
 
 fn find_optimal_fuel_usage(positions: &[i32], func: &'static dyn Fn(i32, i32) -> i32) -> i32 {
-    let (min, max) = find_minmax(&positions);
+    let (min, max) = find_minmax(positions);
 
     let mut min_fuel = i32::MAX;
     for i in min..=max {
