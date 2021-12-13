@@ -27,11 +27,11 @@ fn main() {
 
     for y in 1..height + 1 {
         for x in 1..width + 1 {
-            let north = *heightmap.get(y - 1, x).unwrap();
-            let south = *heightmap.get(y + 1, x).unwrap();
-            let west = *heightmap.get(y, x - 1).unwrap();
-            let east = *heightmap.get(y, x + 1).unwrap();
-            let current = *heightmap.get(y, x).unwrap();
+            let north = heightmap[(y - 1, x)];
+            let south = heightmap[(y + 1, x)];
+            let west = heightmap[(y, x - 1)];
+            let east = heightmap[(y, x + 1)];
+            let current = heightmap[(y, x)];
 
             if [north, south, west, east].iter().all(|&p| current < p) {
                 risk_level += current + 1;
@@ -40,19 +40,14 @@ fn main() {
         }
     }
 
-    let mul_area = basins
-        .iter()
-        .sorted()
-        .rev()
-        .take(3)
-        .product::<usize>();
+    let mul_area = basins.iter().sorted().rev().take(3).product::<usize>();
 
     println!("Part 1 answer: {}", risk_level);
     println!("Part 2 answer: {}", mul_area);
 }
 
 fn check_basin(heightmap: &mut Array2D<usize>, x: usize, y: usize) -> usize {
-    if *heightmap.get(y, x).unwrap() == 9 {
+    if heightmap[(y, x)] == 9 {
         return 0;
     }
 

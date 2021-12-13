@@ -130,14 +130,14 @@ fn draw(ocean: &mut Array2D<usize>, cloud: &Line) {
             let dy = cloud.sy.max(cloud.dy);
 
             for y in sy..=dy {
-                *ocean.get_mut(cloud.sx, y).unwrap() += 1;
+                ocean[(cloud.sx, y)] += 1;
             }
         } else {
             let sx = cloud.sx.min(cloud.dx);
             let dx = cloud.sx.max(cloud.dx);
 
             for x in sx..=dx {
-                *ocean.get_mut(x, cloud.sy).unwrap() += 1;
+                ocean[(x, cloud.sy)] += 1;
             }
         }
     } else if cloud.is_diagonal() {
@@ -148,7 +148,7 @@ fn draw(ocean: &mut Array2D<usize>, cloud: &Line) {
             let x = (cloud.sx as i32 + i as i32 * delta_x) as usize;
             let y = (cloud.sy as i32 + i as i32 * delta_y) as usize;
 
-            *ocean.get_mut(x, y).unwrap() += 1;
+            ocean[(x, y)] += 1;
         }
     }
 }

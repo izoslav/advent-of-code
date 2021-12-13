@@ -71,10 +71,8 @@ fn main() {
 fn mark(board: &mut Array2D<usize>, number: usize) {
     for x in 0..5 {
         for y in 0..5 {
-            let n = board.get_mut(x, y).unwrap();
-
-            if *n == number {
-                *n = 100;
+            if board[(x, y)] == number {
+                board[(x, y)] = 100;
             }
         }
     }

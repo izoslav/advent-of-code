@@ -50,7 +50,7 @@ fn main() {
         .enumerate()
         .for_each(|(y, l)| {
             l.chars().enumerate().for_each(|(x, n)| {
-                octopi.get_mut(y, x).unwrap().energy_level = n.to_string().parse().unwrap();
+                octopi[(y, x)].energy_level = n.to_string().parse().unwrap();
             })
         });
 
@@ -83,7 +83,7 @@ fn step(octopi: &mut Array2D<Dumbo>) -> usize {
     // power up
     for y in 0..HEIGHT {
         for x in 0..WIDTH {
-            octopi.get_mut(y, x).unwrap().power_up();
+            octopi[(y, x)].power_up();
         }
     }
 
@@ -99,7 +99,7 @@ fn step(octopi: &mut Array2D<Dumbo>) -> usize {
     // zero
     for y in 0..HEIGHT {
         for x in 0..WIDTH {
-            octopi.get_mut(y, x).unwrap().reset();
+            octopi[(y, x)].reset();
         }
     }
 
