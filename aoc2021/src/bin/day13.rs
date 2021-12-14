@@ -41,14 +41,6 @@ fn main() {
         })
         .collect::<Vec<Fold>>();
 
-    let (max_x, max_y) = max_coords(&dots);
-    let width = max_x + 1;
-    let height = max_y + 1;
-
-    println!("Size: {}x{}", width, height);
-    println!("Dots: {:?}", dots);
-    println!("Folds: {:?}", folds);
-
     fold(&mut dots, folds[0]);
 
     println!("Part 1 answer: {}", dots.len());
