@@ -11,72 +11,59 @@ fn main() {
 
   let template = input[0].to_string();
 
-  let substitutions = input[1]
+  let rules = input[1]
     .lines()
     .map(|line| {
       let split = line.split(" -> ").collect_vec();
 
       let pair = split[0].to_string();
-      let substitute = format!("{}{}", &pair[0..1], split[1]);
+      let substitute = split[1].chars().next().unwrap();
 
       (pair, substitute)
     })
-    .collect::<HashMap::<String, String>>();
+    .collect::<HashMap::<String, char>>();
 
-  {
-    let mut polymer = template.clone();
-    for _ in 0..10 {
-      polymer = process(&polymer, &substitutions);
-    }
+  let (least_common, most_common) = process(&template, &rules, 10);
+  println!("Part 1 answer: {}", most_common - least_common);
 
-    let letter_counts = count_letters(&polymer);
-    
-    let (least_common, most_common) = letter_counts
-      .into_iter()
-      .minmax_by(|&(_, a), &(_, b)| a.cmp(&b))
-      .into_option()
-      .map(|((_, min), (_, max))| (min, max))
-      .unwrap();
-    
-    println!("Part 1 answer: {}", most_common - least_common);
-  }
-
-  {
-    let mut polymer = template;
-    for _ in 0..40 {
-      polymer = process(&polymer, &substitutions);
-    }
-
-    let letter_counts = count_letters(&polymer);
-    
-    let (least_common, most_common) = letter_counts
-      .into_iter()
-      .minmax_by(|&(_, a), &(_, b)| a.cmp(&b))
-      .into_option()
-      .map(|((_, min), (_, max))| (min, max))
-      .unwrap();
-    
-    println!("Part 2 answer: {}", most_common - least_common);
-  }
+  let (least_common, most_common) = process(&template, &rules, 40);
+  println!("Part 2 answer: {}", most_common - least_common);
 }
 
-fn process(template: &str, substitutions: &HashMap::<String, String>) -> String {
-  let mut output = String::new();
-
-  for i in 0..template.len() - 1 {
-    let pair = &template[i..i+2];
-    output.push_str(&substitutions[pair]);
-  }
-
-  output.push_str(&template[template.len() - 1..]);
-  
-  output
-}
-
-fn count_letters(polymer: &str) -> HashMap::<char, usize> {
-  polymer
+fn process(template: &str, rules: &HashMap::<String, char>, steps: usize) -> (usize, usize) {
+  let mut counts = template
     .chars()
     .unique()
-    .map(|c| (c, polymer.chars().filter(|ch| *ch == c).count()))
-    .collect()
+    .map(|c| (c, template.chars().filter(|&ch| ch == c).count()))
+    .collect();
+
+  for i in 0..template.len() - 1 {
+    process_rec(&mut counts, rules, &template[i..i+2], steps);
+  }
+
+  counts
+    .into_iter()
+    .minmax_by(|&(_, a), &(_, b)| a.cmp(&b))
+    .into_option()
+    .map(|((_, min), (_, max))| (min, max))
+    .unwrap()
+}
+
+fn process_rec(counts: &mut HashMap::<char, usize>, rules: &HashMap::<String, char>, pair: &str, n: usize) {
+  if n == 0 {
+    return;
+  }
+
+  let letter = rules[pair];
+  if !counts.contains_key(&letter) {
+    counts.insert(letter, 1);
+  } else {
+    *counts.get_mut(&letter).unwrap() += 1;
+  }
+
+  let left = format!("{}{}", &pair[0..1], letter);
+  let right = format!("{}{}", letter, &pair[1..2]);
+
+  process_rec(counts, rules, &left, n - 1);
+  process_rec(counts, rules, &right, n - 1);
 }
