@@ -1,69 +1,76 @@
-use std::{fs, collections::HashMap};
+use std::{collections::HashMap, fs};
 
 use itertools::Itertools;
 
 fn main() {
-  let input = fs::read_to_string("res/day14.txt")
-    .unwrap()
-    .split("\n\n")
-    .map(|line| line.to_owned())
-    .collect_vec();
+    let input = fs::read_to_string("res/day14.txt")
+        .unwrap()
+        .split("\n\n")
+        .map(|line| line.to_owned())
+        .collect_vec();
 
-  let template = input[0].to_string();
+    let template = format!("a{}a", input[0])
+        .as_bytes()
+        .windows(2)
+        .map(|bytes| (bytes[0], bytes[1]))
+        .counts();
 
-  let rules = input[1]
-    .lines()
-    .map(|line| {
-      let split = line.split(" -> ").collect_vec();
+    let rules = input[1]
+        .lines()
+        .map(|line| {
+            let split = line.split(" -> ").collect_vec();
+            let pair = split[0].as_bytes();
+            let new = split[1].as_bytes()[0];
 
-      let pair = split[0].to_string();
-      let substitute = split[1].chars().next().unwrap();
+            ((pair[0], pair[1]), new)
+        })
+        .collect::<HashMap<_, _>>();
 
-      (pair, substitute)
-    })
-    .collect::<HashMap::<String, char>>();
+    let (least_common, most_common) = process(template.clone(), &rules, 10);
+    println!("Part 1 answer: {}", most_common - least_common);
 
-  let (least_common, most_common) = process(&template, &rules, 10);
-  println!("Part 1 answer: {}", most_common - least_common);
-
-  let (least_common, most_common) = process(&template, &rules, 40);
-  println!("Part 2 answer: {}", most_common - least_common);
+    let (least_common, most_common) = process(template, &rules, 40);
+    println!("Part 2 answer: {}", most_common - least_common);
 }
 
-fn process(template: &str, rules: &HashMap::<String, char>, steps: usize) -> (usize, usize) {
-  let mut counts = template
-    .chars()
-    .unique()
-    .map(|c| (c, template.chars().filter(|&ch| ch == c).count()))
-    .collect();
+fn process(
+    template: HashMap<(u8, u8), usize>,
+    rules: &HashMap<(u8, u8), u8>,
+    steps: usize,
+) -> (usize, usize) {
+    let mut counts = HashMap::<u8, usize>::new();
 
-  for i in 0..template.len() - 1 {
-    process_rec(&mut counts, rules, &template[i..i+2], steps);
-  }
+    (0..steps)
+        .fold(template, |chain, _| grow(chain, rules))
+        .into_iter()
+        .for_each(|((l, r), c)| {
+            *counts.entry(l).or_insert(0) += c;
+            *counts.entry(r).or_insert(0) += c;
+        });
 
-  counts
-    .into_iter()
-    .minmax_by(|&(_, a), &(_, b)| a.cmp(&b))
-    .into_option()
-    .map(|((_, min), (_, max))| (min, max))
-    .unwrap()
+    counts
+        .into_iter()
+        .filter(|&(c, _)| c != b'a')
+        .minmax_by(|&(_, a), &(_, b)| a.cmp(&b))
+        .into_option()
+        .map(|((_, min), (_, max))| (min / 2, max / 2))
+        .unwrap()
 }
 
-fn process_rec(counts: &mut HashMap::<char, usize>, rules: &HashMap::<String, char>, pair: &str, n: usize) {
-  if n == 0 {
-    return;
-  }
+fn grow(
+    chain: HashMap<(u8, u8), usize>,
+    rules: &HashMap<(u8, u8), u8>,
+) -> HashMap<(u8, u8), usize> {
+    let mut new = HashMap::<(u8, u8), usize>::new();
 
-  let letter = rules[pair];
-  if !counts.contains_key(&letter) {
-    counts.insert(letter, 1);
-  } else {
-    *counts.get_mut(&letter).unwrap() += 1;
-  }
+    chain.into_iter().for_each(|((l, r), c)| {
+        if let Some(&m) = rules.get(&(l, r)) {
+            *new.entry((l, m)).or_insert(0) += c;
+            *new.entry((m, r)).or_insert(0) += c;
+        } else {
+            *new.entry((l, r)).or_insert(0) += c;
+        }
+    });
 
-  let left = format!("{}{}", &pair[0..1], letter);
-  let right = format!("{}{}", letter, &pair[1..2]);
-
-  process_rec(counts, rules, &left, n - 1);
-  process_rec(counts, rules, &right, n - 1);
+    new
 }
