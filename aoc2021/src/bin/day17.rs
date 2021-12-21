@@ -13,7 +13,7 @@ fn main() {
 
     let mut viable_starts = 0;
 
-    for vx in 0..max_x + 1 {
+    for vx in 0..=max_x {
         for vy in min_y - 1..100 {
             let mut vx = vx;
             let mut vy = vy;
@@ -21,12 +21,12 @@ fn main() {
             let mut y = vy;
 
             loop {
-                if (min_x..max_x + 1).contains(&x) && (min_y..max_y + 1).contains(&y) {
+                if (min_x..=max_x).contains(&x) && (min_y..=max_y).contains(&y) {
                     viable_starts += 1;
                     break;
                 }
 
-                if (vx == 0 && !(min_x..max_x + 1).contains(&x)) || x > max_x || y < min_y {
+                if (vx == 0 && !(min_x..=max_x).contains(&x)) || x > max_x || y < min_y {
                     break;
                 }
 
