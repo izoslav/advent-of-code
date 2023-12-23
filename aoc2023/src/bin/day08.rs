@@ -64,9 +64,9 @@ fn main() {
 
     let result = nodes
         .keys()
-        .filter(|key| key.ends_with("A"))
-        .map(|src| calculate_steps(&src, "Z", &instructions, &nodes))
-        .fold(1, |acc, next| num::integer::lcm(acc, next));
+        .filter(|key| key.ends_with('A'))
+        .map(|src| calculate_steps(src, "Z", &instructions, &nodes))
+        .fold(1, num::integer::lcm);
 
     println!("Result part 2: {result}");
 }

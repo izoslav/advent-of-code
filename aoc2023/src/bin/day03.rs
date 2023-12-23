@@ -19,9 +19,9 @@ impl Number {
     }
 
     fn is_adjacent(&self, x: u32, y: u32) -> bool {
-        let min_x = self.x.checked_sub(1).unwrap_or(0);
+        let min_x = self.x.saturating_sub(1);
         let max_x = self.x + self.length;
-        let min_y = self.y.checked_sub(1).unwrap_or(0);
+        let min_y = self.y.saturating_sub(1);
         let max_y = self.y + 1;
 
         x >= min_x && x <= max_x && y >= min_y && y <= max_y
@@ -42,7 +42,7 @@ fn main() {
             }
 
             let start = line[current..line.len()]
-                .find(|c: char| c.is_digit(10))
+                .find(|c: char| c.is_ascii_digit())
                 .unwrap_or(line.len());
 
             if start == line.len() {
@@ -50,7 +50,7 @@ fn main() {
             }
 
             let end = line[current + start..line.len()]
-                .find(|c: char| !c.is_digit(10))
+                .find(|c: char| !c.is_ascii_digit())
                 .unwrap_or(line.len());
 
             let e = usize::min(line.len(), current + start + end);
@@ -63,7 +63,7 @@ fn main() {
 
         line.chars()
             .enumerate()
-            .filter(|&(_, c)| !c.is_digit(10) && c != '.')
+            .filter(|&(_, c)| !c.is_ascii_digit() && c != '.')
             .for_each(|(x, c)| {
                 symbols.insert((x as u32, y as u32), c);
             });

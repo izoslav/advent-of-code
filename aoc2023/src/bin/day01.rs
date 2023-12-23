@@ -23,7 +23,7 @@ fn main() {
         .lines()
         .map(|line| line.chars().filter(|c| c.is_numeric()).collect::<String>())
         .map(|numbers| {
-            let first = numbers.chars().nth(0).unwrap();
+            let first = numbers.chars().next().unwrap();
             let last = numbers.chars().nth_back(0).unwrap();
             format!("{}{}", first, last).parse::<usize>().unwrap()
         })

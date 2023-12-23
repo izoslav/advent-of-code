@@ -68,14 +68,13 @@ fn main() {
     let range_mappers = input
         .lines()
         .skip(2)
-        .map(|line| format!("{line}\n"))
-        .collect::<String>()
+        .fold("".to_string(), |acc, line| format!("{acc}\n{line}"))
         .split("\n\n")
         .map(|block| {
             let ranges = block
                 .lines()
                 .skip(1)
-                .map(|line| Range::new(line))
+                .map(Range::new)
                 .collect::<Vec<Range>>();
 
             RangeMapper::new(ranges)

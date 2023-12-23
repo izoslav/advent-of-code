@@ -64,10 +64,7 @@ fn find_start(map: &HashMap<(i32, i32), Pipe>) -> (i32, i32) {
 fn replace_start(x: i32, y: i32, map: &mut HashMap<(i32, i32), Pipe>) {
     let n = if y > 0 {
         if let Some(north) = map.get(&(x, y - 1)) {
-            match north {
-                Pipe::NS | Pipe::SW | Pipe::SE => true,
-                _ => false,
-            }
+            matches!(north, Pipe::NS | Pipe::SW | Pipe::SE)
         } else {
             false
         }
@@ -76,29 +73,20 @@ fn replace_start(x: i32, y: i32, map: &mut HashMap<(i32, i32), Pipe>) {
     };
 
     let s = if let Some(south) = map.get(&(x, y + 1)) {
-        match south {
-            Pipe::NS | Pipe::NW | Pipe::NE => true,
-            _ => false,
-        }
+        matches!(south, Pipe::NS | Pipe::NW | Pipe::NE)
     } else {
         false
     };
 
     let e = if let Some(east) = map.get(&(x + 1, y)) {
-        match east {
-            Pipe::EW | Pipe::NW | Pipe::SW => true,
-            _ => false,
-        }
+        matches!(east, Pipe::EW | Pipe::NW | Pipe::SW)
     } else {
         false
     };
 
     let w = if x > 0 {
         if let Some(west) = map.get(&(x - 1, y)) {
-            match west {
-                Pipe::EW | Pipe::NE | Pipe::SE => true,
-                _ => false,
-            }
+            matches!(west, Pipe::EW | Pipe::NE | Pipe::SE)
         } else {
             false
         }
@@ -168,15 +156,13 @@ fn calculate_inner_area(map: &HashMap<(i32, i32), Pipe>) -> usize {
             if let Some(pipe) = map.get(&(x, y)) {
                 match pipe {
                     Pipe::NS => hit_pipes += 1,
-                    Pipe::NE | Pipe::SE => previous = pipe.clone(),
+                    Pipe::NE | Pipe::SE => previous = *pipe,
                     Pipe::SW if matches!(previous, Pipe::NE) => hit_pipes += 1,
                     Pipe::NW if matches!(previous, Pipe::SE) => hit_pipes += 1,
                     _ => {}
                 }
-            } else {
-                if hit_pipes > 0 && hit_pipes % 2 == 1 {
-                    area += 1;
-                }
+            } else if hit_pipes > 0 && hit_pipes % 2 == 1 {
+                area += 1;
             }
         }
     }
@@ -190,7 +176,6 @@ fn main() {
         .lines()
         .enumerate()
         .flat_map(|(y, line)| {
-            let y = y;
             line.chars()
                 .enumerate()
                 .filter(|&(_, c)| c != '.')

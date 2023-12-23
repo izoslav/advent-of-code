@@ -32,7 +32,7 @@ impl Game {
         });
 
         Game {
-            id: id,
+            id,
             red: r,
             green: g,
             blue: b,
@@ -48,7 +48,7 @@ fn main() {
     let games = fs::read_to_string("inputs/day02.txt")
         .unwrap()
         .lines()
-        .map(|line| Game::new(line))
+        .map(Game::new)
         .collect::<Vec<Game>>();
 
     let r1 = games

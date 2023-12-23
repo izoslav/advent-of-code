@@ -52,7 +52,7 @@ fn main() {
 
     println!("Result part 1: {result}");
 
-    let input = input.replace(" ", "");
+    let input = input.replace(' ', "");
     let entries = input.lines().collect::<Vec<&str>>();
     let time = entries[0][5..entries[0].len()].parse::<u64>().unwrap();
     let record = entries[1][9..entries[1].len()].parse::<u64>().unwrap();

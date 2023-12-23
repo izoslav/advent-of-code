@@ -60,7 +60,7 @@ fn main() {
 
     let result = input
         .lines()
-        .map(|line| GameCard::new(line))
+        .map(GameCard::new)
         .map(|gc| gc.calculate_points())
         .sum::<u32>();
 
@@ -68,7 +68,7 @@ fn main() {
 
     let cards = input
         .lines()
-        .map(|line| GameCard::new(line))
+        .map(GameCard::new)
         .collect::<Vec<GameCard>>();
 
     let mut copies = Vec::new();

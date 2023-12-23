@@ -17,17 +17,17 @@ fn predict(history: &mut Vec<Vec<i32>>) {
     }
 }
 
-fn extrapolate_forward(history: &mut Vec<Vec<i32>>) {
+fn extrapolate_forward(history: &mut [Vec<i32>]) {
     history.last_mut().unwrap().push(0);
     let mut tail = 0;
 
     history.iter_mut().rev().skip(1).for_each(|prediction| {
-        tail = tail + prediction.last().unwrap();
+        tail += prediction.last().unwrap();
         prediction.push(tail);
     });
 }
 
-fn extrapolate_backward(history: &mut Vec<Vec<i32>>) {
+fn extrapolate_backward(history: &mut [Vec<i32>]) {
     history.last_mut().unwrap().push(0);
     let mut head = 0;
 

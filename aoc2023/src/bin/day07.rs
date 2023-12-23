@@ -79,7 +79,7 @@ impl Type {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct Hand {
     hand_type: Type,
     cards: Vec<Card>,
@@ -92,7 +92,7 @@ impl Hand {
 
         let cards = input[0..space]
             .chars()
-            .map(|c| Card::new(c))
+            .map(Card::new)
             .collect::<Vec<Card>>();
         let hand_type = Type::new(&input[0..space]);
         let bid = input[space + 1..input.len()].parse::<usize>().unwrap();
@@ -151,17 +151,23 @@ impl Hand {
 
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         if self.hand_type != other.hand_type {
-            return Some(self.hand_type.cmp(&other.hand_type));
+            return self.hand_type.cmp(&other.hand_type);
         }
 
         for (c1, c2) in self.cards.iter().zip(other.cards.iter()) {
             if c1 != c2 {
-                return Some(c1.cmp(&c2));
+                return c1.cmp(c2);
             }
         }
 
-        Some(std::cmp::Ordering::Equal)
+        std::cmp::Ordering::Equal
     }
 }
 
@@ -169,7 +175,7 @@ fn main() {
     let hands = fs::read_to_string("inputs/day07.txt")
         .unwrap()
         .lines()
-        .map(|line| Hand::new(line))
+        .map(Hand::new)
         .collect::<Vec<Hand>>();
 
     let mut sorted_hands = hands.clone();
