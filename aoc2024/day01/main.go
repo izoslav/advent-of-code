@@ -2,21 +2,14 @@ package main
 
 import (
 	"fmt"
-	"math"
-	"os"
 	"slices"
-	"strconv"
 	"strings"
+
+	"github.com/izoslav/aoc2024/utils"
 )
 
 func main() {
-	// data, err := os.ReadFile("day01/test.txt")
-	data, err := os.ReadFile("day01/input.txt")
-	if err != nil {
-		os.Exit(1)
-	}
-
-	lines := strings.Split(string(data), "\n")
+	lines := utils.ReadLines("day01/test.txt")
 
 	left := []int{}
 	right := []int{}
@@ -28,25 +21,20 @@ func main() {
 			continue
 		}
 
-		leftEntry, _ := strconv.Atoi(entries[0])
-		rightEntry, _ := strconv.Atoi(entries[1])
+		leftEntry := utils.Atoi(entries[0])
+		rightEntry := utils.Atoi(entries[1])
 
 		left = append(left, leftEntry)
 		right = append(right, rightEntry)
 	}
 
 	slices.Sort(left)
-	slices.Reverse(left)
-
 	slices.Sort(right)
-	slices.Reverse(right)
 
-	totalDiff := 0
-	for i := 0; i < len(left); i++ {
-		diff := left[i] - right[i]
-		diff = int(math.Abs(float64(diff)))
-		totalDiff += diff
-	}
+	zipped := utils.Zip(left, right)
+	totalDiff := utils.Fold(zipped, 0, func(acc int, next utils.Pair[int]) int {
+		return acc + utils.AbsInt(next.Left-next.Right)
+	})
 
 	fmt.Println("part 1:", totalDiff)
 
