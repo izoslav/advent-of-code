@@ -35,9 +35,9 @@ func main() {
 	// data := utils.ReadLines("day02/test.txt")
 	data := utils.ReadLines("day02/input.txt")
 
-	levels := utils.Map[[]string, string, [][]int, []int](data[:len(data)-1], func(line string) []int {
+	levels := utils.Map[string, []int](data[:len(data)-1], func(line string) []int {
 		input := strings.Split(line, " ")
-		return utils.Map[[]string, string, []int, int](input, utils.Atoi)
+		return utils.Map[string, int](input, utils.Atoi)
 	})
 
 	count := 0

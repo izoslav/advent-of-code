@@ -30,8 +30,8 @@ func Atoi(input string) int {
 
 type mapFunc[E any, R any] func(E) R
 
-func Map[SE ~[]E, E any, SR ~[]R, R any](s SE, f mapFunc[E, R]) SR {
-	result := make(SR, len(s))
+func Map[E, R any](s []E, f mapFunc[E, R]) []R {
+	result := make([]R, len(s))
 	for i := range s {
 		result[i] = f(s[i])
 	}
@@ -40,8 +40,8 @@ func Map[SE ~[]E, E any, SR ~[]R, R any](s SE, f mapFunc[E, R]) SR {
 
 type filterFunc[E any] func(E) bool
 
-func Filter[S ~[]E, E any](s S, f filterFunc[E]) S {
-	result := S{}
+func Filter[E any](s []E, f filterFunc[E]) []E {
+	result := []E{}
 	for _, e := range s {
 		if f(e) {
 			result = append(result, e)
@@ -60,9 +60,9 @@ func Reduce[E any](s []E, init E, f reduceFunc[E]) E {
 	return acc
 }
 
-type foldFunc[R any, E any] func(acc R, next E) R
+type foldFunc[E, R any] func(acc R, next E) R
 
-func Fold[R any, E any](s []E, init R, f foldFunc[R, E]) R {
+func Fold[E, R any](s []E, init R, f foldFunc[E, R]) R {
 	acc := init
 	for _, v := range s {
 		acc = f(acc, v)
