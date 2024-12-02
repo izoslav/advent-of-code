@@ -2,52 +2,33 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/izoslav/aoc2024/utils"
 )
 
-func IsAscending(slice []int) bool {
-	for i := 0; i < len(slice)-1; i++ {
-		if slice[i+1] <= slice[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func IsDescending(slice []int) bool {
-	for i := 0; i < len(slice)-1; i++ {
-		if slice[i+1] >= slice[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func IsDiffLessThan3(slice []int) bool {
-	for i := 0; i < len(slice)-1; i++ {
-		if utils.AbsInt(slice[i+1]-slice[i]) > 3 {
-			return false
-		}
-	}
-	return true
-}
-
 func IsLevelSafe(slice []int) bool {
-	return (IsAscending(slice) || IsDescending(slice)) && IsDiffLessThan3(slice)
-}
+	sign := slice[1] - slice[0]
 
-func removeAt(slice []int, idx int) []int {
-	newSlice := make([]int, len(slice)-1)
-	for i := 0; i < idx; i++ {
-		newSlice[i] = slice[i]
+	if sign == 0 {
+		return false
 	}
 
-	for i := idx + 1; i < len(slice); i++ {
-		newSlice[i-1] = slice[i]
+	for i := 0; i < len(slice)-1; i++ {
+		diff := slice[i+1] - slice[i]
+
+		if diff*sign <= 0 {
+			return false
+		}
+
+		diffAbs := utils.AbsInt(diff)
+
+		if diffAbs > 3 {
+			return false
+		}
 	}
-	return newSlice
+	return true
 }
 
 func main() {
@@ -74,7 +55,7 @@ func main() {
 			safe++
 		} else {
 			for i := range level {
-				newLevel := removeAt(level, i)
+				newLevel := slices.Concat(level[:i], level[i+1:])
 
 				if IsLevelSafe(newLevel) {
 					safe++
