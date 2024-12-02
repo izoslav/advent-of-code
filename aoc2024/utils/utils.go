@@ -28,10 +28,10 @@ func Atoi(input string) int {
 
 // functional
 
-type mapFunc[E any] func(E) E
+type mapFunc[E any, R any] func(E) R
 
-func Map[S ~[]E, E any](s S, f mapFunc[E]) S {
-	result := make(S, len(s))
+func Map[SE ~[]E, E any, SR ~[]R, R any](s SE, f mapFunc[E, R]) SR {
+	result := make(SR, len(s))
 	for i := range s {
 		result[i] = f(s[i])
 	}
