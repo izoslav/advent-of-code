@@ -11,7 +11,7 @@ import (
 
 func ReadFile(filepath string) string {
 	data, _ := os.ReadFile(filepath)
-	return string(data)
+	return strings.TrimSpace(string(data))
 }
 
 func ReadLines(filepath string) []string {
