@@ -26,6 +26,11 @@ func Atoi(input string) int {
 	return value
 }
 
+func Atoi64(input string) int64 {
+	value, _ := strconv.ParseInt(input, 10, 64)
+	return value
+}
+
 // functional
 
 type mapFunc[E any, R any] func(E) R
