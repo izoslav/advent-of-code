@@ -19,6 +19,16 @@ func ReadLines(filepath string) []string {
 	return strings.Split(data, "\n")
 }
 
+func ReadInts(filepath string) []int {
+	data := ReadFile(filepath)
+
+	result := []int{}
+	for _, number := range strings.Split(data, " ") {
+		result = append(result, Atoi(number))
+	}
+	return result
+}
+
 // conversions
 
 func Atoi(input string) int {
