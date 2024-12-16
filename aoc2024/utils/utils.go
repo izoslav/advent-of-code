@@ -14,6 +14,24 @@ type Vec2 struct {
 	Y int
 }
 
+type Stack[E any] []E
+
+func (s *Stack[E]) Push(e E) {
+	*s = append(*s, e)
+}
+
+func (s *Stack[E]) Pop() *E {
+	l := len(*s)
+	if l == 0 {
+		return nil
+	}
+
+	result := (*s)[l-1]
+	*s = (*s)[:l-1]
+
+	return &result
+}
+
 // file operations
 
 func ReadFile(filepath string) string {
