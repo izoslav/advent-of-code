@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+// types
+
+type Vec2 struct {
+	X int
+	Y int
+}
+
 // file operations
 
 func ReadFile(filepath string) string {
