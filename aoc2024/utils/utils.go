@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"math"
 	"os"
 	"strconv"
@@ -130,4 +131,11 @@ func Zip[E any](left []E, right []E) []Pair[E] {
 
 func AbsInt(value int) int {
 	return int(math.Abs(float64(value)))
+}
+
+// other
+
+func WaitForInput() {
+	input := bufio.NewScanner(os.Stdin)
+	input.Scan()
 }
