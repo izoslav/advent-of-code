@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/izoslav/aoc2024/utils"
@@ -33,7 +34,7 @@ func parseConnections(filepath string) (nodes map[string]bool, connections map[C
 	return
 }
 
-func solve(filepath string) (result int) {
+func solve(filepath string) (triplesWithT int, biggestClique int) {
 	nodes, connections := parseConnections(filepath)
 
 	nodeList := []string{}
@@ -41,8 +42,8 @@ func solve(filepath string) (result int) {
 		nodeList = append(nodeList, k)
 	}
 
+	// part 1
 	triples := map[string]bool{}
-
 	for _, combination := range combin.Combinations(len(nodes), 3) {
 		a := nodeList[combination[0]]
 		b := nodeList[combination[1]]
@@ -65,16 +66,86 @@ func solve(filepath string) (result int) {
 		}
 	}
 
-	result = len(triples)
+	triplesWithT = len(triples)
+
+	// part 2
+	for _, node := range nodeList {
+		biggestClique = max(biggestClique, maxClique(node, []string{}, connections))
+	}
+
+	return
+}
+
+var cliqueCache = map[string]bool{}
+
+func isClique(nodes []string, connections map[Connection]bool) (result bool) {
+	// fmt.Println(nodes)
+	if len(nodes) == 1 {
+		return true
+	}
+
+	slices.Sort(nodes)
+	key := strings.Join(nodes, ",")
+	if v, ok := cliqueCache[key]; ok {
+		return v
+	}
+
+	if isClique(nodes[:len(nodes)-1], connections) {
+		result = true
+		newest := nodes[len(nodes)-1]
+		for _, node := range nodes[:len(nodes)-1] {
+			if !(connections[Connection{node, newest}] && connections[Connection{newest, node}]) {
+				result = false
+				break
+			}
+		}
+	}
+	cliqueCache[key] = result
+
+	return result
+}
+
+var cliqueSizeCache = map[string]int{}
+var maxCliqueSize = 0
+var maxCliquePassword = ""
+
+func maxClique(newNode string, nodes []string, connections map[Connection]bool) (result int) {
+	newNodes := slices.Clone(nodes)
+	newNodes = append(newNodes, newNode)
+	slices.Sort(newNodes)
+
+	key := strings.Join(newNodes, ",")
+	if v, ok := cliqueSizeCache[key]; ok {
+		return v
+	}
+
+	if !isClique(newNodes, connections) {
+		return
+	}
+
+	result = len(newNodes)
+	for k := range connections {
+		if k.a == newNode {
+			result = max(result, maxClique(k.b, newNodes, connections))
+		}
+	}
+	cliqueSizeCache[key] = result
+
+	if result > maxCliqueSize {
+		maxCliqueSize = result
+		maxCliquePassword = strings.Join(newNodes, ",")
+	}
 
 	return
 }
 
 func main() {
+	// tripletsWithT, biggestClique := solve("day23/test.txt")
+	tripletsWithT, biggestClique := solve("day23/input.txt")
 
 	fmt.Println()
 	fmt.Println("=== day 23 ===")
-	fmt.Println("part 1:", solve("day23/input.txt"))
-	fmt.Println("part 2:")
+	fmt.Println("part 1:", tripletsWithT)
+	fmt.Println("part 2:", biggestClique, maxCliquePassword)
 	fmt.Println("==============")
 }
